@@ -2,12 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using System.Timers;
 
 namespace Blazored.Typeahead
@@ -16,7 +11,7 @@ namespace Blazored.Typeahead
     {
         private EditContext _editContext;
         private FieldIdentifier _fieldIdentifier;
-        private Timer _debounceTimer;
+        private System.Timers.Timer _debounceTimer;
         private string _searchText = string.Empty;
         private bool _eventsHookedUp = false;
         private ElementReference _searchInput;
@@ -113,7 +108,7 @@ namespace Blazored.Typeahead
                 throw new InvalidOperationException($"{GetType()} requires a {nameof(ResultTemplate)} parameter.");
             }
 
-            _debounceTimer = new Timer();
+            _debounceTimer = new System.Timers.Timer();
             _debounceTimer.Interval = Debounce;
             _debounceTimer.AutoReset = false;
             _debounceTimer.Elapsed += Search;
@@ -135,7 +130,7 @@ namespace Blazored.Typeahead
 
         protected override void OnParametersSet()
         {
-            //Initialize();
+            Initialize();
         }
 
         private void Initialize()
@@ -242,13 +237,11 @@ namespace Blazored.Typeahead
         }
         private async Task HandleKeydown(KeyboardEventArgs args)
         {
-
-            Console.WriteLine("key: " + args.Key);
             if (args.Key == "Tab")
             {
                 await ResetControl();
             }
-            
+
         }
 
         private async Task HandleKeyup(KeyboardEventArgs args)
@@ -411,7 +404,7 @@ namespace Blazored.Typeahead
         private async Task SelectResult(TItem item)
         {
             var value = ConvertMethod(item);
-       
+
             if (IsMultiselect)
             {
                 var valueList = Values ?? new List<TValue>();
@@ -437,7 +430,6 @@ namespace Blazored.Typeahead
 
         private async Task SelectNotFoundPlaceholder()
         {
-            Debug.Assert(AddItemOnEmptyResultMethod != null);
             try
             {
                 // Potentially dangerous code
@@ -510,7 +502,7 @@ namespace Blazored.Typeahead
 
         public async Task Focus()
         {
-            await HandleClickOnMask(); // Interop.Focus(JSRuntime, _searchInput);
+            await HandleClickOnMask();
         }
     }
 }
